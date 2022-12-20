@@ -62,7 +62,7 @@ class Attacker(object):
     def decrypt(self, cipher: bytes) -> tuple[bytes, int]:
         '''
         Decrypt a ciphertext.
-        The strategy is decrypt the 2 continuous cipher blocks, the first one is used as IV.
+        The strategy is decrypt just 2 continuous cipher blocks each time, the first one is used as IV.
         Return the plaintext of the ciphertext and the number of queries sent to PaddingOracle.
         '''
         if cipher is None:
@@ -83,9 +83,9 @@ class Attacker(object):
 
     def decrypt_block(self, cipher: bytes, last_block: bool = False) -> tuple[bytes, int]:
         '''
-        Decrypt a the last block in `cipher`
+        Decrypt the last block in `cipher`
         Set `last_block = True` if in fact the plaintext for this last block has padding.
-            (Use for accelerating the predictor)
+            (For accelerating the predictor with CBC padding)
         Return the plaintext of the last block and the number of queries sent to PaddingOracle
         '''
         print(f':::Cipher Block: {cipher.hex()}')
@@ -120,14 +120,14 @@ class Attacker(object):
 
             index -= 1
 
-        print(f'===> Decrypt Block: {str(bytes(result)):<60} [Try: {number_of_tries}]')
+        print(f'===> Decrypted Block: {str(bytes(result)):<60} [Try: {number_of_tries}]')
         return result, number_of_tries
 
     def __try(self, query: bytearray, query_index: int, ci: int) -> tuple[int, int]:
         '''
         Try to guess a byte at index `query_index` in the `query`
         and send the query to PaddingOracle to check if the query (cipher) is valid padding.
-        Return the found byte and the number of queries sent to PaddingOracle
+        Return the true byte and the number of queries sent to PaddingOracle
         '''
         padd = len(query) - self.block_size - query_index
         number_of_tries = 0

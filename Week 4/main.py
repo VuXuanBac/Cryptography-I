@@ -36,7 +36,6 @@ if len(sys.argv) < 2:
 else:
     cipher = bytes.fromhex('f20bdba6ff29eed7b046d1df9fb7000058b1ffb4210a580f748b4ac714c001bd4a61044426fb515dad3f21f18aa577c0bdf302936266926ff37dbf7035d5eeb4')
     po = POA.RemotePaddingOracle('http://crypto-class.appspot.com/po?er=', [404])
-    print('Test Server:', po.is_valid(cipher))
 
 attacker = POA.Attacker(po, POA.Guesser.Default())
 plain, number_of_tries = attacker.decrypt(cipher)
